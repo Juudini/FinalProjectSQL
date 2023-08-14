@@ -1,24 +1,24 @@
 USE clinicalsys;
 
 -- Insertar Áreas
-INSERT INTO area (nombre) 
+INSERT INTO area (nombre)
 VALUES ('DERMATOLOGÍA'),
-	   ('CARDIOLOGÍA'),
+       ('CARDIOLOGÍA'),
        ('OFTALMOLOGÍA'),
-	   ('PEDIATRÍA'),
+       ('PEDIATRÍA'),
        ('TRAUMATOLOGÍA');
 
 -- Insertar Médicos
-INSERT INTO medico (id_area, apellido, nombre) 
+INSERT INTO medico (id_area, apellido, nombre)
 VALUES (1,'Ceretto', 'Juan'),
-	   (1, 'Pérez', 'Ana'),
+       (1, 'Pérez', 'Ana'),
        (1, 'García', 'Miguel'),
-	   (1, 'López', 'María'),
-	   (1, 'González', 'Pedro'),
-	   (2,'Houtson', 'Paul'),
+       (1, 'López', 'María'),
+       (1, 'González', 'Pedro'),
+       (2,'Houtson', 'Paul'),
        (3,'Hambers', 'Terence'),
        (3, 'Martínez', 'Carlos'),
-	   (4,'McGreil', 'Siana'),
+       (4,'McGreil', 'Siana'),
        (5,'Dowrey', 'Gibbie');
 
 -- Insertar Administrativo (Asistente/Secretario)
@@ -32,7 +32,7 @@ VALUES ('user1', 'Pérez', 'María', 'maria@gmail.com', '+54 9 0261 123 4567'),
 -- Insertar Relacion Medico-Administrativo (Asistente/Secretario)
 INSERT INTO asignacion_medico_administrativo (id_medico, id_administrativo)
 VALUES (1, 1),
-	   (2, 1),
+       (2, 1),
        (3, 1),
        (4, 1),
        (5, 1),
@@ -65,7 +65,7 @@ VALUES ('Descuento OSDE', 10.00, 'Descuento exclusivo para afiliados de OSDE', 1
        ('Descuento Union Personal', 7.50, 'Descuento para afiliados de Union Personal', 8);
     
 -- Insertar Paciente
-INSERT INTO paciente (dni, apellido, nombre, email, telefono, direccion, id_obra_social) 
+INSERT INTO paciente (dni, apellido, nombre, email, telefono, direccion, id_obra_social)
 VALUES (18222301,'Gonzalez','Juan Carlos','jcarlos18@gmail.com','+54 9 0263 400 9222','Calle Falsa 123', 1),
        (25056091,'De Simone','Josefina','josedesimone@gmail.com','+54 9 0261 958 8811','Avenida Imaginaria 456', 1),
        (52258903,'Gutierrez','Alvaro','alvaritogamer6@yahoo.com','+54 9 0263 466 1272','Calle Inventada 789', 1),
@@ -75,7 +75,7 @@ VALUES (18222301,'Gonzalez','Juan Carlos','jcarlos18@gmail.com','+54 9 0263 400 
        (46891234, 'Fernández', 'Sofía', 'sofia.fernandez@gmail.com', '+54 9 0261 123 4567', 'Calle Ficticia 987', 5),
        (53987123, 'Ramírez', 'Martín', 'martin.ramirez@hotmail.com', '+54 9 0263 987 6543', 'Calle de Ensueño 345', 5),
        (62548912, 'López', 'Valentina', 'valentina.lopez@gmail.com', '+54 9 0263 456 7890', 'Calle Irrealidad 678', 6),
-	   (71235678, 'Pereira', 'Lucas', 'lucas.pereira@hotmail.com', '+54 9 0261 345 6789', 'Boulevard Imaginario 789', 6),
+       (71235678, 'Pereira', 'Lucas', 'lucas.pereira@hotmail.com', '+54 9 0261 345 6789', 'Boulevard Imaginario 789', 6),
        (87912345, 'Suárez', 'Isabella', 'isabella.suarez@gmail.com', '+54 9 0261 987 6543', 'Avenida Irreal 543', 7),
        (98765432, 'Gómez', 'Mateo', 'mateo.gomez@hotmail.com', '+54 9 0263 321 3213', 'Calle de los Sueños 432', 7),
        (50123456, 'Silva', 'Camila', 'camila.silva@gmail.com', '+54 9 0263 567 1234', 'Avenida de Fantasía 123', 8),
@@ -85,12 +85,12 @@ VALUES (18222301,'Gonzalez','Juan Carlos','jcarlos18@gmail.com','+54 9 0263 400 
 -- Insertar Metodos de pago
 INSERT INTO metodo_pago (nombre)
 VALUES ('Efectivo'),
-	   ('Mercado Pago'),
+       ('Mercado Pago'),
        ('Transferencia Bancaria');
-       
+
 INSERT INTO tipo_transaccion (nombre)
 VALUES ('Facturación'),
-	   ('Reembolso'),
+       ('Reembolso'),
        ('Descuento');
        
 -- Insertar Tratamientos       
@@ -104,16 +104,16 @@ VALUES (1, 1, 'Tratamiento de Acné', '2023-06-15', '2023-06-30', 15000),
 -- Insertar Estados turno
 INSERT INTO estado_turno (nombre)
 VALUES ('Programado'),
-	   ('Cancelado'),
-	   ('Confirmado');
+       ('Cancelado'),
+       ('Confirmado');
 
--- Insertar Turnos 
+-- Insertar Turnos
 INSERT INTO turno (id_paciente, id_medico, fecha_hora, descripcion, id_estado_turno, costo)
 VALUES (6, 3, '2023-09-25 09:00:00', 'Control acné', 3, 12500.00),
        (7, 6, '2023-09-26 10:00:00', 'Chequeo análisis', 3, 13500.00),
        (8, 5, '2023-09-27 11:15:00', 'Control acné', 1, 12000.00),
        (9, 6, '2023-09-28 12:00:00', 'Chequeo general', 2, 0.00),
-	   (10, 9, '2023-09-29 11:00:00', 'Chequeo general', 3, 10000.00),
+       (10, 9, '2023-09-29 11:00:00', 'Chequeo general', 3, 10000.00),
        (12, 2, '2023-09-30 15:00:00', 'Chequeo general', 1, 8500.00),
        (14, 7, '2023-10-02 17:00:00', 'Chequeo general', 2, 0.00),
        (15, 10, '2023-11-03 18:00:00', 'Control fractura', 3, 20000.00),
