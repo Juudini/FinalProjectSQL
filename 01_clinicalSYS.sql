@@ -33,14 +33,34 @@ CREATE TABLE asignacion_medico_administrativo (
     FOREIGN KEY (id_administrativo) REFERENCES administrativo(id_administrativo)
 );
 
+CREATE TABLE obra_social (
+	id_obra_social INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	nombre VARCHAR(50) NOT NULL,
+	direccion VARCHAR(100),
+    telefono VARCHAR(20),
+	email VARCHAR(100) NOT NULL,
+    sitio_web VARCHAR(100)
+);
+
+CREATE TABLE descuento (
+	id_descuento INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    porcentaje DECIMAL(5, 2) NOT NULL,
+    descripcion VARCHAR(100),
+	id_obra_social INT,
+    FOREIGN KEY (id_obra_social) REFERENCES obra_social(id_obra_social)
+);
+
 CREATE TABLE paciente (
 	id_paciente INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+    id_obra_social INT,
 	dni INT NOT NULL,
 	apellido VARCHAR(50) NOT NULL,
 	nombre VARCHAR(50) NOT NULL,
 	email VARCHAR(100) NOT NULL,
 	telefono VARCHAR(20) NOT NULL,
-    direccion VARCHAR(100) NOT NULL
+    direccion VARCHAR(100) NOT NULL,
+    FOREIGN KEY (id_obra_social) REFERENCES obra_social(id_obra_social)
 );
 
 CREATE TABLE tratamiento (
