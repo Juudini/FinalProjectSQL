@@ -38,7 +38,7 @@ VALUES (1, 1),
        (5, 1),
        (6, 2),
        (7, 3),
-       (8, 3),
+       (8, 4),
        (9, 4),
        (10, 5);
 
@@ -93,14 +93,6 @@ VALUES ('Facturación'),
        ('Reembolso'),
        ('Descuento');
        
--- Insertar Tratamientos       
-INSERT INTO tratamiento (id_paciente, id_medico, descripcion, fecha_inicio, fecha_fin, costo)
-VALUES (1, 1, 'Tratamiento de Acné', '2023-06-15', '2023-06-30', 15000),
-       (2, 6, 'Tratamiento de Hipertensión', '2023-06-16', '2023-06-25', 80300),
-       (4, 8, 'Tratamiento de Miopía', '2023-06-17', '2023-06-22', 20000),
-       (6, 10, 'Tratamiento de Vacunas', '2023-06-18', '2023-06-20', 1000),
-       (3, 9, 'Tratamiento de Fracturas', '2023-07-29', '2023-08-19', 118000);
-
 -- Insertar Estados turno
 INSERT INTO estado_turno (nombre)
 VALUES ('Programado'),
@@ -108,21 +100,27 @@ VALUES ('Programado'),
        ('Confirmado');
 
 -- Insertar Turnos
-INSERT INTO turno (id_paciente, id_medico, fecha_hora, descripcion, id_estado_turno, costo)
-VALUES (6, 3, '2023-09-25 09:00:00', 'Control acné', 3, 12500.00),
-       (7, 6, '2023-09-26 10:00:00', 'Chequeo análisis', 3, 13500.00),
-       (8, 5, '2023-09-27 11:15:00', 'Control acné', 1, 12000.00),
-       (9, 6, '2023-09-28 12:00:00', 'Chequeo general', 2, 0.00),
-       (10, 9, '2023-09-29 11:00:00', 'Chequeo general', 3, 10000.00),
-       (12, 2, '2023-09-30 15:00:00', 'Chequeo general', 1, 8500.00),
-       (14, 7, '2023-10-02 17:00:00', 'Chequeo general', 2, 0.00),
-       (15, 10, '2023-11-03 18:00:00', 'Control fractura', 3, 20000.00),
-       (1, 2, '2023-12-15 10:00:00', 'Control acné', 3, 12500.00),
-       (2, 2, '2023-12-15 10:00:00', 'Control acné', 3, 12500.00),
-       (3, 3, '2023-12-15 12:00:00', 'Control acné', 3, 12500.00),
-       (4, 4, '2023-12-16 13:00:00', 'Control acné', 3, 12500.00),
-       (5, 5, '2023-12-16 13:00:00', 'Control acné', 3, 12500.00),
-       (13, 6, '2023-12-16 16:00:00', 'Pedido estudios clínicos', 3, 13500.00),
-       (11, 8, '2023-12-17 14:30:00', 'Chequeo general', 3, 10000.00);
-
-      
+INSERT INTO turno (id_paciente, id_medico, fecha, hora, descripcion, id_estado_turno, costo, username)
+VALUES (6, 1, '2023-09-25', '09:00:00', 'Control acné', 3, 12500.00, 'user1'),
+       (7, 6, '2023-09-26', '10:00:00', 'Chequeo análisis', 3, 13500.00, 'user1'),
+       (8, 5, '2023-09-27', '11:15:00', 'Control acné', 1, 12000.00, 'user1'),
+       (9, 6, '2023-09-28', '12:00:00', 'Chequeo general', 1, 0.00, 'user1'),
+       (10, 9, '2023-09-29', '11:00:00', 'Chequeo general', 3, 10000.00, 'user1'),
+       (12, 2, '2023-09-30', '15:00:00', 'Chequeo general', 1, 8500.00, 'user1'),
+       (14, 7, '2023-10-02', '17:00:00', 'Chequeo general', 1, 0.00, 'user1'),
+       (15, 10, '2023-11-03', '18:00:00', 'Control fractura', 3, 20000.00, 'user1'),
+       (1, 1, '2023-12-15', '10:00:00', 'Control acné', 3, 12500.00, 'user1'),
+       (2, 2, '2023-12-15', '10:00:00', 'Control acné', 3, 12500.00, 'user1'),
+       (3, 3, '2023-12-15', '12:00:00', 'Control acné', 3, 12500.00, 'user1'),
+       (4, 4, '2023-12-16', '13:00:00', 'Control acné', 3, 12500.00, 'user1'),
+       (5, 5, '2023-12-16', '13:00:00', 'Control acné', 3, 12500.00, 'user1'),
+       (13, 6, '2023-12-16', '16:00:00', 'Pedido estudios clínicos', 3, 13500.00, 'user1'),
+       (11, 8, '2023-12-17', '14:30:00', 'Chequeo general', 3, 10000.00, 'user1');
+       
+-- Insertar Tratamientos       
+INSERT INTO tratamiento (id_paciente, id_medico, descripcion, fecha_inicio, fecha_fin, costo)
+VALUES (1, 1, 'Tratamiento de Acné', '2023-06-15', '2023-06-30', 15000),
+       (2, 6, 'Tratamiento de Hipertensión', '2023-06-16', '2023-06-25', 80300),
+       (4, 8, 'Tratamiento de Miopía', '2023-06-17', '2023-06-22', 20000),
+       (6, 10, 'Tratamiento de Vacunas', '2023-06-18', '2023-06-20', 1000),
+       (3, 9, 'Tratamiento de Fracturas', '2023-07-29', '2023-08-19', 118000);
