@@ -1,5 +1,4 @@
 -- ~~~>FUNCTION: Obtener descripción de último tratamiento realizado por tal médico<~~~
--- Médicos existentes: Juan, Paul, Terence, Siana, Gibbie
 
 DROP FUNCTION IF EXISTS tratamientos_de;
 
@@ -27,33 +26,109 @@ END$$
 
 SELECT tratamientos_de('Juan') AS Tratamiento;
 
--- ~~~> FUNCTION: Obtener estado del último turno <~~~
--- Médicos existentes: Ceretto, Houtson, Hambers, McGreil, Dowrey.
-
-DROP FUNCTION IF EXISTS estado_ultimo_turno;
-
+-- ~~~> FUNCTION: Obtener total Pacientes por Obra Social: <~~~
 DELIMITER $$
-CREATE FUNCTION estado_ultimo_turno (apellido_medico VARCHAR(20)) 
-RETURNS VARCHAR(50)
+CREATE FUNCTION pacientes_por_obra_social(p_id_obra_social INT) RETURNS INT
 DETERMINISTIC
 BEGIN
-	DECLARE total VARCHAR(50);
-	SET total = (SELECT estado
-		FROM turno
-		WHERE id_medico IN (SELECT id_medico
-		FROM medico
-		WHERE apellido LIKE CONCAT('%', apellido_medico,'%'))
-        ORDER BY turno.estado DESC
-        LIMIT 1);
-
-    IF total IS NULL THEN
-		SET total = CONCAT('No se han encontrados turnos de DOCTOR: ', apellido_medico);
-	END IF;
+    DECLARE paciente_count INT;
     
-    	RETURN total;
+    SELECT COUNT(*) INTO paciente_count
+    FROM paciente
+    WHERE id_obra_social = p_id_obra_social;
+    RETURN paciente_count;
 END$$
-SELECT estado_ultimo_turno('Miguel') AS Turno;
 
--- OBTENER paciente por su DNI
+-- ~~~> FUNCTION: Calcular Turnos por medico: <~~~
+DELIMITER $$
+CREATE FUNCTION contar_turnos_por_medico(p_id_medico INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE num_turnos INT;
+    
+    SELECT COUNT(*) INTO num_turnos
+    FROM turno
+    WHERE id_medico = p_id_medico;
+    
+    RETURN num_turnos;
+END$$
+
+-- ~~~> FUNCTION: Calcular Total de Pagos de un Paciente: <~~~
+DELIMITER $$
+CREATE FUNCTION calcular_total_pagos_paciente(p_id_paciente INT) RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE total_pagos DECIMAL(10, 2);
+    
+    SELECT SUM(importe) INTO total_pagos
+    FROM historial_pagos_facturacion
+    WHERE id_turno IN (SELECT id_turno FROM turno WHERE id_paciente = p_id_paciente);
+    
+    RETURN total_pagos;
+END$$
+
+-- ~~~> FUNCTION: Calcular Medicos Asociados a un Area: <~~~
+DELIMITER $$
+CREATE FUNCTION obtener_medicos_por_area(p_id_area INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE num_medicos INT;
+    
+    SELECT COUNT(*) INTO num_medicos
+    FROM medico
+    WHERE id_area = p_id_area;
+    
+    RETURN num_medicos;
+END$$
+
+-- ~~~> FUNCTION: Calcular Promedio de Costo de Tratamientos por Paciente: <~~~
+DELIMITER $$
+CREATE FUNCTION calcular_promedio_costo_tratamientos(p_id_paciente INT) RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE avg_costo DECIMAL(10, 2);
+    
+    SELECT AVG(costo) INTO avg_costo
+    FROM tratamiento
+    WHERE id_paciente = p_id_paciente;
+    
+    RETURN avg_costo;
+END$$
 
 
+-- ~~~> FUNCTION: Calcular Total de Ingresos por Tratamientos en un Rango de Fechas: <~~~
+DELIMITER $$
+CREATE FUNCTION calcular_total_ingresos_tratamientos(p_fecha_inicio DATE, p_fecha_fin DATE) RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE total_ingresos DECIMAL(10, 2);
+    
+    SELECT SUM(importe) INTO total_ingresos
+    FROM historial_pagos_facturacion
+    WHERE tipo_transaccion = 'Tratamiento'
+    AND fecha_transaccion BETWEEN p_fecha_inicio AND p_fecha_fin;
+    
+    RETURN total_ingresos;
+END$$
+
+
+-- ~~~> FUNCTION: Obtener PacienteID por DNI: <~~~
+DROP FUNCTION IF EXISTS get_paciente_por_dni;
+
+DELIMITER $$
+CREATE FUNCTION get_paciente_por_dni(p_dni INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE paciente_id INT;
+
+    -- Realizar la consulta para obtener el paciente por DNI
+    SELECT id_paciente INTO paciente_id
+    FROM paciente
+    WHERE dni = p_dni;
+
+    -- Verificar si se encontró el paciente
+    IF paciente_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Paciente no encontrado';
+    END IF;
+    RETURN paciente_id;
+END$$
