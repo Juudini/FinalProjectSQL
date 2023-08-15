@@ -24,7 +24,8 @@ CREATE OR REPLACE VIEW gestion_turnos AS
 SELECT a.nombre AS area,
 	m.apellido AS apellido_medico, 
 	m.nombre AS nombre_medico,
-    t.fecha_hora, et.nombre,
+    t.fecha, t.hora,
+    et.nombre,
 	p.apellido AS apellido_paciente, 
 	p.nombre AS nombre_paciente,
     t.descripcion AS turno_descripcion
@@ -35,7 +36,7 @@ INNER JOIN area a ON m.id_medico = a.id_area
 INNER JOIN estado_turno et ON t.id_estado_turno = et.id_estado_turno
 ORDER BY a.id_area DESC;
 
--- Vista Tratamientos de pacientes
+-- Vista Tratamientos
 CREATE OR REPLACE VIEW tratamientos_pacientes AS
 SELECT m.apellido AS medico_apellido,
 	m.nombre AS medico_nombre,
@@ -52,12 +53,14 @@ INNER JOIN paciente p ON tr.id_paciente = p.id_paciente
 INNER JOIN area a ON m.id_area = a.id_area
 ORDER BY a.id_area DESC;
 
+
 -- Vista Turnos Confirmados
 CREATE OR REPLACE VIEW turnos_confirmados AS
 SELECT m.apellido AS apellido_medico,
        m.nombre AS nombre_medico,
        a.nombre AS area,
-       t.fecha_hora,
+       t.fecha,
+       t.hora,
        p.apellido AS apellido_paciente,
        p.nombre AS nombre_paciente
 FROM paciente p
@@ -73,7 +76,8 @@ CREATE OR REPLACE VIEW turnos_programados AS
 SELECT m.apellido AS apellido_medico,
        m.nombre AS nombre_medico,
        a.nombre AS area,
-       t.fecha_hora,
+       t.fecha,
+       t.hora,
        p.apellido AS apellido_paciente,
        p.nombre AS nombre_paciente
 FROM turno t
@@ -83,3 +87,32 @@ INNER JOIN area a ON m.id_area = a.id_area
 INNER JOIN estado_turno et ON t.id_estado_turno = et.id_estado_turno
 WHERE et.nombre = 'Programado'
 ORDER BY a.id_area DESC;
+
+-- Vista Pagos y Facturación
+CREATE OR REPLACE VIEW pagos_facturacion AS
+SELECT hpf.id_transaccion AS id_transaccion,
+		p.apellido AS paciente_apellido,
+		p.nombre AS paciente_nombre,
+		tr.descripcion AS tratamiento_descripcion,
+		hpf.fecha_transaccion AS fecha_transaccion,
+		mp.nombre AS metodo_pago,
+		hpf.importe AS importe,
+		tt.nombre AS tipo_transaccion,
+		hpf.estado_pago AS estado_pago
+FROM historial_pagos_facturacion hpf
+INNER JOIN turno t ON hpf.id_turno = t.id_turno
+INNER JOIN tratamiento tr ON hpf.id_tratamiento = tr.id_tratamiento
+INNER JOIN paciente p ON t.id_paciente = p.id_paciente
+INNER JOIN metodo_pago mp ON hpf.id_metodo_pago = mp.id_metodo_pago
+INNER JOIN tipo_transaccion tt ON hpf.tipo_transaccion = tt.id_tipo_transaccion
+ORDER BY hpf.id_transaccion DESC;
+
+-- Vista Resumen de Descuentos por Obra Social
+CREATE OR REPLACE VIEW descuentos_por_obra_social AS
+SELECT
+    os.nombre AS obra_social,
+    d.nombre AS descuentos_disponibles,
+	d.porcentaje AS porcentajes_descuentos,
+    d.descripcion
+FROM obra_social os
+INNER JOIN descuento d ON os.id_obra_social = d.id_obra_social;
