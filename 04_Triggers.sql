@@ -1,20 +1,8 @@
-USE clinicalsys;
--- AGREGAR EL BEGIN / END a los que faltan
--- HACER UN TRIGGER PARA AL MOMENTO DE Add un turno y tratamiento se añada tambien al historial medico del paciente
--- Controlar el tema de que al ser un Turno tiene que el turno estar 
-DELIMITER $$
-CREATE TRIGGER add_to_historial
-AFTER INSERT ON turno
-FOR EACH ROW
-BEGIN
-	INSERT INTO historial_medico (id_paciente, id_turno, descripcion, fecha_hora)
-	VALUES(NEW.id_paciente, NEW.id_turno, NEW.descripcion, CURTIME());
-END$$
+-- de aca para arriba joyaaa
 
-
--- BEFORE Trigger inserción en la tabla "paciente"
+-- Trigger BEFORE INSERT en la tabla "paciente"
 DELIMITER $$
-CREATE TRIGGER log_paciente_validation
+CREATE TRIGGER before_log_paciente_validation
 BEFORE INSERT ON paciente
 FOR EACH ROW
 BEGIN
@@ -23,71 +11,91 @@ BEGIN
     SET NEW.nombre = UPPER(NEW.nombre);
 END$$
 
+
+-- Trigger BEFORE INSERT en la tabla "turno"
 DELIMITER $$
--- AFTER Trigger inserción en la tabla "paciente"
-CREATE TRIGGER log_paciente_insert
+CREATE TRIGGER before_log_turno_validation
+BEFORE INSERT ON turno
+FOR EACH ROW
+BEGIN
+    -- Verificar si la fecha de inicio es mayor que la fecha actual.
+    IF NEW.fecha < NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se puede insertar un turno con fecha de inicio anterior a la fecha actual.';
+    END IF;
+END$$
+
+-- Trigger AFTER INSERT en la tabla "paciente"
+DELIMITER $$
+CREATE TRIGGER after_log_paciente_insert
 AFTER INSERT ON paciente
 FOR EACH ROW
+BEGIN
     INSERT INTO log_paciente (username, operation_date, operation_time, operation_type, id_paciente, dni, apellido, nombre)
     VALUES (USER(), CURDATE(), CURTIME(), 'AFTER', NEW.id_paciente, NEW.dni, NEW.apellido, NEW.nombre);
-$$
-
--- TRIGGERS log_turno
-
-DELIMITER $$
--- Trigger BEFORE inserción en la tabla "turno"
-CREATE TRIGGER log_turno_validation
-BEFORE INSERT ON turno
-FOR EACH ROW
-BEGIN
-  ## Verificar si la fecha de inicio es mayor que la fecha actual.
-	IF NEW.fecha_hora < NOW() THEN
-		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'No se puede insertar un turno con fecha de inicio anterior a la fecha actual.';
-	END IF;
 END$$
 
--- Trigger AFTER inserción en la tabla "turno"
-CREATE TRIGGER log_turno_insert
+
+-- Trigger AFTER UPDATE datos paciente
+DELIMITER $$
+CREATE TRIGGER after_log_paciente_update
+AFTER UPDATE ON paciente
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_paciente (username, operation_date, operation_time, operation_type, id_paciente, dni, apellido, nombre)
+    VALUES (USER(), CURDATE(), CURTIME(), 'UPDATE', NEW.id_paciente, NEW.dni, NEW.apellido, NEW.nombre);
+END$$
+
+-- Trigger AFTER INSERT en la tabla "turno"
+DELIMITER $$
+CREATE TRIGGER after_log_turno_insert
 AFTER INSERT ON turno
 FOR EACH ROW
-  INSERT INTO log_turno (username, operation_date, operation_time, operation_type, id_turno, id_paciente, id_medico, id_tratamiento, fecha_hora, estado)
-  VALUES (USER(), CURDATE(), CURTIME(), 'INSERT', NEW.id_turno, NEW.id_paciente, NEW.id_medico, NEW.id_tratamiento, NEW.fecha_hora, NEW.estado);
+BEGIN
+    INSERT INTO log_turno (username, operation_date, operation_time, operation_type, id_turno, id_paciente, id_medico, id_estado_turno, descripcion, costo)
+    VALUES (NEW.username, CURDATE(), CURTIME(), 'INSERT', NEW.id_turno, NEW.id_paciente, NEW.id_medico, NEW.id_estado_turno, NEW.descripcion, NEW.costo);
+END$$
 
--- TRIGGERS historial_medico (Para insertarlos en historial al momento de crear un tratamiento)
-
-
--- BEFORE Trigger inserción en la tabla "paciente"
+-- Trigger AFTER, insertar turno en historial_medico
 DELIMITER $$
-CREATE TRIGGER estado_to_upper_case
+CREATE TRIGGER after_insert_turno
+AFTER INSERT ON turno
+FOR EACH ROW
+BEGIN
+    INSERT INTO historial_medico (id_paciente, id_turno, descripcion)
+    VALUES (NEW.id_paciente, NEW.id_turno, NEW.descripcion);
+END$$
+
+-- Trigger AFTER, insertar tratamiento en historial_medico
+DELIMITER $$
+CREATE TRIGGER after_insert_tratamiento
+AFTER INSERT ON tratamiento
+FOR EACH ROW
+BEGIN
+    INSERT INTO historial_medico (id_paciente, id_tratamiento, descripcion)
+    VALUES (NEW.id_paciente, NEW.id_tratamiento, NEW.descripcion);
+END$$
+
+-- Trigger AFTER, validar al insertar turno
+DELIMITER $$
+CREATE TRIGGER before_insert_turno_validation
 BEFORE INSERT ON turno
 FOR EACH ROW
 BEGIN
-    -- Asegurar que el campo estado siempre este en mayusculas
-    SET NEW.estado = UPPER(NEW.estado);
+    DECLARE is_relationship INT;
+     -- Obtener el id_administrativo correspondiente a la asignación
+    DECLARE admin_id VARCHAR(50);
+    SELECT id_administrativo INTO admin_id FROM administrativo WHERE username = NEW.username;
+    -- Verificar si el administrativo está asociado al médico
+    SELECT COUNT(*) INTO is_relationship FROM asignacion_medico_administrativo
+    WHERE id_administrativo = admin_id
+    AND id_medico = NEW.id_medico;
+
+    -- Si no hay coincidencias, lanzar una excepción
+    IF is_relationship = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El administrativo no está relacionado con el médico.';
+    END IF;
 END$$
 
-DELIMITER //
 
-CREATE TRIGGER before_update_turno
-BEFORE UPDATE ON turno
-FOR EACH ROW
-BEGIN
-    DECLARE admin_id INT;
-    DECLARE med_id INT;
 
-    -- Obtener el ID del administrativo que está realizando la modificación
-    SELECT id_administrativo INTO admin_id FROM administrativo WHERE email = NEW.username; -- Asegúrate de reemplazar "username" por el campo correcto que identifica al administrativo
-
-    -- Obtener el ID del médico asociado al turno
-    SELECT id_medico INTO med_id FROM turno WHERE id_turno = NEW.id_turno;
-
-    -- Verificar si el administrativo es el mismo que asignó el turno y si es el médico asociado
-    IF admin_id != NEW.id_administrativo OR admin_id != med_id THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'No tienes permiso para modificar este turno';
-    END IF;
-END;
-//
-
-DELIMITER ;
