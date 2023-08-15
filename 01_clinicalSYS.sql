@@ -18,7 +18,7 @@ CREATE TABLE medico (
 
 CREATE TABLE administrativo (
     id_administrativo INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	username VARCHAR(50) NOT NULL,
+	username VARCHAR(50) NOT NULL UNIQUE,
 	apellido VARCHAR(50) NOT NULL,
 	nombre VARCHAR(50) NOT NULL,
 	email VARCHAR(100) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE administrativo (
 );
 
 CREATE TABLE asignacion_medico_administrativo (
-    id_asignacion INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_asignacion_administrativo INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_medico INT NOT NULL,
     id_administrativo INT,
     FOREIGN KEY (id_medico) REFERENCES medico(id_medico),
@@ -54,13 +54,34 @@ CREATE TABLE descuento (
 CREATE TABLE paciente (
 	id_paciente INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
     id_obra_social INT,
-	dni INT NOT NULL,
+	dni INT NOT NULL UNIQUE,
 	apellido VARCHAR(50) NOT NULL,
 	nombre VARCHAR(50) NOT NULL,
 	email VARCHAR(100) NOT NULL,
 	telefono VARCHAR(20) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     FOREIGN KEY (id_obra_social) REFERENCES obra_social(id_obra_social)
+);
+
+CREATE TABLE estado_turno (
+    id_estado_turno INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE turno (
+	id_turno INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	id_paciente INT NOT NULL,
+	id_medico INT NOT NULL,
+    id_estado_turno INT NOT NULL,
+	fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+	descripcion VARCHAR(100),
+    costo DECIMAL(10, 2) NOT NULL,
+	username VARCHAR(50) NOT NULL,
+	FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente),
+	FOREIGN KEY (id_medico) REFERENCES medico(id_medico),
+    FOREIGN KEY (id_estado_turno) REFERENCES estado_turno(id_estado_turno),
+    FOREIGN KEY (username) REFERENCES administrativo(username)
 );
 
 CREATE TABLE tratamiento (
@@ -70,36 +91,16 @@ CREATE TABLE tratamiento (
 	descripcion VARCHAR(100) NOT NULL,
 	fecha_inicio DATE NOT NULL,
 	fecha_fin DATE,
-	costo DECIMAL(10, 2) NOT NULL,
+    costo DECIMAL(10, 2) NOT NULL,
 	FOREIGN KEY (id_medico) REFERENCES medico(id_medico),
 	FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente)
 );
 
-CREATE TABLE estado_turno (
-    id_estado_turno INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(20) NOT NULL
-);
-
-CREATE TABLE turno (
-	id_turno INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	id_paciente INT NOT NULL,
-	id_medico INT NOT NULL,
-    id_estado_turno INT NOT NULL,
-	fecha_hora DATETIME NOT NULL,
-	descripcion VARCHAR(100),
-    costo DECIMAL(10, 2) NOT NULL,
-	FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente),
-	FOREIGN KEY (id_medico) REFERENCES medico(id_medico),
-    FOREIGN KEY (id_estado_turno) REFERENCES estado_turno(id_estado_turno)
-);
-
 CREATE TABLE historial_medico (
-	id_historial_medico INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	id_paciente INT NOT NULL,
-	id_turno INT NOT NULL,
-	id_tratamiento INT NOT NULL,
+	id_turno INT,
+	id_tratamiento INT,
 	descripcion VARCHAR(255) NOT NULL,
-	fecha_hora DATETIME NOT NULL,
 	FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente),
 	FOREIGN KEY (id_turno) REFERENCES turno(id_turno),
 	FOREIGN KEY (id_tratamiento) REFERENCES tratamiento(id_tratamiento)
@@ -107,12 +108,12 @@ CREATE TABLE historial_medico (
 
 CREATE TABLE metodo_pago (
 	id_metodo_pago INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(50) NOT NULL
+    nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE tipo_transaccion (
     id_tipo_transaccion INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(50) NOT NULL
+    nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE historial_pagos_facturacion (
@@ -138,8 +139,11 @@ CREATE TABLE log_paciente (
 	operation_time TIME NOT NULL,
 	operation_type VARCHAR(10) NOT NULL,
 	id_paciente INT NOT NULL,
-    fecha_hora DATETIME NOT NULL,
-    FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente)
+	dni INT NOT NULL,
+	apellido VARCHAR(50) NOT NULL,
+	nombre VARCHAR(50) NOT NULL,
+    FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente),
+    FOREIGN KEY (username) REFERENCES administrativo(username)
 );
 
 -- Create LOG table for turno
@@ -150,6 +154,9 @@ CREATE TABLE log_turno (
 	operation_time TIME NOT NULL,
 	operation_type VARCHAR(10) NOT NULL,
 	id_turno INT NOT NULL,
-	fecha_hora DATETIME NOT NULL,
-    FOREIGN KEY (id_turno) REFERENCES turno(id_turno)
+    id_estado_turno INT NOT NULL,
+    descripcion VARCHAR(100) NOT NULL,
+    costo DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_turno) REFERENCES turno(id_turno),
+    FOREIGN KEY (username) REFERENCES administrativo(username)
 );
