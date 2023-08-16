@@ -1,11 +1,11 @@
-# [Curso SQL]: Proyecto Final
+# [SQL Course ]: Final Project
 
-## ClinicalSYS Database
+<div align="center"> <h2> 🏥 |ClinicalSYS Database| <h2>📋</div>
 
- <summary>Índice</summary>
+ <summary>INDICE</summary>
   <ol>
      <li>
-      <a href="https://github.com/Juudini/FinalProjectSQL/blob/main/01_clinicalSYS.sql">Archivo creación ClinicalSYS</a>
+      <a href="https://github.com/Juudini/FinalProjectSQL/blob/main/01_clinicalSYS.sql">CREACION DB ClinicalSYS</a>
      </li>
      <li>
       <a href="https://github.com/Juudini/FinalProjectSQL/blob/main/02_Views.sql">[VIEWS]</a></li>
@@ -23,15 +23,15 @@
       <a href="https://github.com/Juudini/FinalProjectSQL/blob/main/06_InsertData.sql">[INSERT DATA]</a></li>
      </li>
       <li>
-      <a href="https://github.com/Juudini/FinalProjectSQL/blob/main/FinalProjectSQL.pdf">[PDF] ARCHIVO PRE_ENTREGA</a></li>
+      <a href="https://github.com/Juudini/FinalProjectSQL/blob/main/FinalProjectSQL.pdf">[PDF] DOCUMENTATION FILE</a></li>
      </li>
   </ol>
 
-## Schema Overview
+## 📋 Schema Overview
 
 The ClinicalSYS database schema is designed to manage different aspects of a medical system. It includes tables for areas, doctors, administrative staff, patients, appointments, treatments, payment history, and more.
 
-## Table Descriptions
+## 📊 Table Descriptions
 
 1. `area`: Stores information about medical areas or specialties.
 
