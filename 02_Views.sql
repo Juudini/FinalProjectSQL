@@ -1,4 +1,5 @@
 USE clinicalsys;
+
 -- Vista Áreas con sus médicos
 CREATE OR REPLACE VIEW area_medicos AS
 SELECT m.apellido AS apellido_medico, 
@@ -37,7 +38,7 @@ INNER JOIN estado_turno et ON t.id_estado_turno = et.id_estado_turno
 ORDER BY a.id_area DESC;
 
 -- Vista Tratamientos
-CREATE OR REPLACE VIEW tratamientos_pacientes AS
+CREATE OR REPLACE VIEW tratamientos_medicos AS
 SELECT m.apellido AS medico_apellido,
 	m.nombre AS medico_nombre,
     tr.descripcion AS tratamiento_descripcion,
@@ -52,7 +53,6 @@ INNER JOIN medico m ON tr.id_medico = m.id_medico
 INNER JOIN paciente p ON tr.id_paciente = p.id_paciente
 INNER JOIN area a ON m.id_area = a.id_area
 ORDER BY a.id_area DESC;
-
 
 -- Vista Turnos Confirmados
 CREATE OR REPLACE VIEW turnos_confirmados AS
@@ -99,15 +99,13 @@ SELECT
     hft.fecha_transaccion AS fecha_transaccion,
     hft.descripcion AS descripcion,
     hft.importe AS importe
-FROM
-    historial_facturacion_turno hft
+FROM historial_facturacion_turno hft
 JOIN turno t ON hft.id_turno = t.id_turno
 JOIN tipo_transaccion tt ON hft.id_tipo_transaccion = tt.id_tipo_transaccion
 JOIN estado_pago ep ON hft.id_estado_pago = ep.id_estado_pago
 JOIN metodo_pago mp ON hft.id_metodo_pago = mp.id_metodo_pago;
 
 -- Vista Historial de Facturación de Tratamientos:
-
 CREATE VIEW vista_facturacion_tratamientos AS
 SELECT
     hft.id_transaccion_tratamiento AS id_transaccion,
@@ -118,8 +116,7 @@ SELECT
     hft.fecha_transaccion AS fecha_transaccion,
     hft.descripcion AS descripcion,
     hft.importe AS importe
-FROM
-    historial_facturacion_tratamiento hft
+FROM historial_facturacion_tratamiento hft
 JOIN tratamiento tr ON hft.id_tratamiento = tr.id_tratamiento
 JOIN tipo_transaccion tt ON hft.id_tipo_transaccion = tt.id_tipo_transaccion
 JOIN estado_pago ep ON hft.id_estado_pago = ep.id_estado_pago

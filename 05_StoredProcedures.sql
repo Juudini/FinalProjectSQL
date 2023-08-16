@@ -1,5 +1,5 @@
 USE clinicalsys;
--- ~~>STORED PROCEDURES<~~ ----- Obtener turnos con id_medico -----
+-- ~~>STORED PROCEDURES<~~ ----- Obtener todos los turnos del medico con id_medico -----
 DROP PROCEDURE IF EXISTS get_turnos;
 DELIMITER $$
 CREATE PROCEDURE get_turnos (IN medico_id INT)
@@ -67,28 +67,23 @@ END$$
 CALL change_estado_turno(7, 'Confirmado', @resultado);
 SELECT @resultado;
 
-
- DROP PROCEDURE IF EXISTS obtener_turnos_y_tratamientos_por_paciente;
-
+-- ~~>STORED PROCEDURES<~~ ----- Obtener historial medico completo de paciente -----
 DELIMITER $$
-CREATE PROCEDURE obtener_turnos_y_tratamientos_por_paciente(id_paciente_param INT)
+CREATE PROCEDURE obtener_historial_medico_paciente(IN paciente_id INT)
 BEGIN
-    SELECT
-        t.id_turno,
-        t.fecha AS fecha_turno,
-        m.apellido AS apellido_medico,
-        m.nombre AS nombre_medico,
-        tr.id_tratamiento,
-        tr.descripcion AS descripcion_tratamiento,
-        tr.fecha_inicio AS fecha_inicio_tratamiento,
-        tr.fecha_fin AS fecha_fin_tratamiento
+    SELECT t.id_turno AS id_evento, 
+    t.fecha AS fecha_evento,
+    t.hora AS hora_evento, 
+    'Turno' AS tipo_evento
     FROM turno t
-    LEFT JOIN medico m ON t.id_medico = m.id_medico
-    LEFT JOIN tratamiento tr ON t.id_paciente = tr.id_paciente
-    WHERE t.id_paciente = id_paciente_param
-    ORDER BY t.fecha, tr.fecha_inicio;
+    WHERE t.id_paciente = paciente_id
+    UNION ALL
+    SELECT tr.id_tratamiento AS id_evento,
+    tr.fecha_inicio AS fecha_evento,
+    NULL AS hora_evento,
+    'Tratamiento' AS tipo_evento
+    FROM tratamiento tr
+    WHERE tr.id_paciente = paciente_id
+    ORDER BY id_evento DESC;
 END$$
-DELIMITER ;
-CALL obtener_turnos_y_tratamientos_por_paciente(6);
-
-
+CALL obtener_historial_medico_paciente (6)

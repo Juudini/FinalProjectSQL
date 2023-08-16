@@ -117,18 +117,18 @@ VALUES (1, 1, 'Tratamiento de Acné', '2023-09-25', '2023-06-30', 15000.00),
 START TRANSACTION;
 
 INSERT INTO historial_facturacion_turno (id_turno, id_tipo_transaccion, id_estado_pago, id_metodo_pago, fecha_transaccion, descripcion, importe)
-VALUES (1, 1, 3, 1, NOW(), 'Facturación Consulta', 12500.00),
-       (2, 1, 3, 1, NOW(), 'Facturación Consulta', 13500.00),
-       (4, 1, 3, 1, NOW(), 'Facturación Consulta', 10000.00),
-       (5, 1, 3, 1, NOW(), 'Facturación Consulta', 8500.00),
-       (8, 1, 3, 1, NOW(), 'Facturación Consulta', 12500.00),
-       (9, 1, 3, 1, NOW(), 'Facturación Consulta', 12500.00),
-       (10, 1, 3, 1, NOW(), 'Facturación Consulta', 12500.00),
-       (11, 1, 3, 1, NOW(), 'Facturación Consulta', 12500.00),
-       (12, 1, 3, 1, NOW(), 'Facturación Consulta', 12500.00),
-       (13, 1, 3, 1, NOW(), 'Facturación Consulta', 13500.00),
-       (14, 1, 3, 1, NOW(), 'Facturación Consulta', 10000.00),
-       (15, 1, 3, 1, NOW(), 'Facturación Consulta', 10000.00);
+VALUES (1, 1, 3, 1, '2023-07-25', 'Facturación Consulta', 12500.00),
+       (2, 1, 3, 1, '2023-07-28', 'Facturación Consulta', 13500.00),
+       (4, 1, 3, 1, '2023-08-02', 'Facturación Consulta', 10000.00),
+       (5, 1, 3, 1, '2023-08-02', 'Facturación Consulta', 8500.00),
+       (8, 1, 3, 1, '2023-08-02', 'Facturación Consulta', 12500.00),
+       (9, 1, 3, 1, '2023-08-02', 'Facturación Consulta', 12500.00),
+       (10, 1, 3, 1, '2023-09-02', 'Facturación Consulta', 12500.00),
+       (11, 1, 3, 1, '2023-09-02', 'Facturación Consulta', 12500.00),
+       (12, 1, 3, 1, '2023-09-02', 'Facturación Consulta', 12500.00),
+       (13, 1, 3, 1, '2023-09-02', 'Facturación Consulta', 13500.00),
+       (14, 1, 3, 1, '2023-10-02', 'Facturación Consulta', 10000.00),
+       (15, 1, 3, 1, '2023-10-02', 'Facturación Consulta', 10000.00);
 
 COMMIT;
        
@@ -136,11 +136,11 @@ COMMIT;
 START TRANSACTION;
 
 INSERT INTO historial_facturacion_tratamiento (id_tratamiento, id_tipo_transaccion, id_estado_pago, id_metodo_pago, fecha_transaccion, descripcion, importe)
-VALUES (1, 1, 3, 1, NOW(), 'Facturación cremas', 15000.00),
-       (2, 1, 3, 2, NOW(), 'Facturación medicación', 80300.00),
-       (3, 1, 3, 2, NOW(), 'Facturación operación', 46000.00),
-       (4, 1, 3, 1, NOW(), 'Facturación vacuna', 10000.00),
-       (5, 1, 3, 1, NOW(), 'Facturación medicación', 0864005.81),
-       (6, 1, 3, 2, NOW(), 'Facturación procedimiento médico', 18000.00);
+VALUES (1, 1, 3, 1, '2023-07-25', 'Facturación cremas', 15000.00),
+       (2, 1, 3, 2, '2023-08-02', 'Facturación medicación', 80300.00),
+       (3, 1, 3, 2, '2023-09-02', 'Facturación operación', 46000.00),
+       (4, 1, 3, 1, '2023-09-02', 'Facturación vacuna', 10000.00),
+       (5, 1, 3, 1, '2023-10-02', 'Facturación medicación', 0864005.81),
+       (6, 1, 3, 2, '2023-10-02', 'Facturación procedimiento médico', 18000.00);
 
 COMMIT;
