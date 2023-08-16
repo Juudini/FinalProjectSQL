@@ -67,24 +67,28 @@ END$$
 CALL change_estado_turno(7, 'Confirmado', @resultado);
 SELECT @resultado;
 
-DROP PROCEDURE IF EXISTS obtener_historial_medico;
--- ~~>STORED PROCEDURES<~~ ----- Obtener Historial medico completo mediante id_paciente -----
+
+ DROP PROCEDURE IF EXISTS obtener_turnos_y_tratamientos_por_paciente;
+
 DELIMITER $$
-CREATE PROCEDURE obtener_historial_medico(id_paciente_param INT)
+CREATE PROCEDURE obtener_turnos_y_tratamientos_por_paciente(id_paciente_param INT)
 BEGIN
     SELECT
-        hm.id_paciente,
+        t.id_turno,
         t.fecha AS fecha_turno,
         m.apellido AS apellido_medico,
         m.nombre AS nombre_medico,
+        tr.id_tratamiento,
         tr.descripcion AS descripcion_tratamiento,
         tr.fecha_inicio AS fecha_inicio_tratamiento,
         tr.fecha_fin AS fecha_fin_tratamiento
-    FROM historial_medico hm
-    INNER JOIN turno t ON hm.id_turno = t.id_turno
-    INNER JOIN medico m ON t.id_medico = m.id_medico
-    INNER JOIN tratamiento tr ON hm.id_tratamiento = tr.id_tratamiento
-    WHERE hm.id_paciente = id_paciente_param;
+    FROM turno t
+    LEFT JOIN medico m ON t.id_medico = m.id_medico
+    LEFT JOIN tratamiento tr ON t.id_paciente = tr.id_paciente
+    WHERE t.id_paciente = id_paciente_param
+    ORDER BY t.fecha, tr.fecha_inicio;
 END$$
+DELIMITER ;
+CALL obtener_turnos_y_tratamientos_por_paciente(6);
 
-CALL obtener_historial_medico(2);
+
