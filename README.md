@@ -1,6 +1,6 @@
 # [SQL Course ]: Final Project
 
-<div align="center"> <h2> 🏥 |ClinicalSYS Database| <h2>📋</div>
+<div align="center"> <h2> 🏥 |ClinicalSYS Database| 📋<h2> </div>
 
  <summary>INDICE</summary>
   <ol>
