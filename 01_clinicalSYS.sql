@@ -86,17 +86,6 @@ CREATE TABLE tratamiento (
 	FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente)
 );
 
-CREATE TABLE historial_medico (
-	id_historial_medico INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	id_paciente INT NOT NULL,
-	id_turno INT,
-	id_tratamiento INT,
-	descripcion VARCHAR(255) NOT NULL,
-	FOREIGN KEY (id_paciente) REFERENCES paciente(id_paciente),
-	FOREIGN KEY (id_turno) REFERENCES turno(id_turno),
-	FOREIGN KEY (id_tratamiento) REFERENCES tratamiento(id_tratamiento)
-);
-
 CREATE TABLE tipo_transaccion (
     id_tipo_transaccion INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(50) NOT NULL
