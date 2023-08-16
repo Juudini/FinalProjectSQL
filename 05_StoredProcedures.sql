@@ -86,8 +86,5 @@ BEGIN
     INNER JOIN tratamiento tr ON hm.id_tratamiento = tr.id_tratamiento
     WHERE hm.id_paciente = id_paciente_param;
 END$$
-DELIMITER ;
-
 
 CALL obtener_historial_medico(2);
-
